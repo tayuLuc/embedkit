@@ -25,6 +25,9 @@ const ui = {
   byline: t(locale, { en: '', ru: '' }),
   portrait: t(locale, { en: '', ru: '' }),
   preview: t(locale, { en: 'Preview', ru: 'Превью' }),
+  size: t(locale, { en: 'Size', ru: 'Размер' }),
+  sizeResponsive: t(locale, { en: 'Responsive', ru: 'Адаптивный' }),
+  copied: t(locale, { en: 'Copied', ru: 'Скопировано' }),
   code: t(locale, { en: 'Embed code', ru: 'Код для вставки' }),
   copy: t(locale, { en: 'Copy', ru: 'Копировать' }),
   seoTitle: t(locale, { en: 'Twitch embed code generator | EmbedKit', ru: 'Генератор кода для Twitch | EmbedKit' }),
@@ -36,7 +39,7 @@ const ui = {
   <h1>{ui.h1}</h1>
   <p class="lead">{ui.lead}</p>
 
-  <div class="ek" data-ek-generator="twitch" data-t-invalid={ui.invalid}>
+  <div class="ek" data-ek-generator="twitch" data-t-invalid={ui.invalid} data-t-copied={ui.copied}>
     <div class="panel">
       <label for="ek-url">{ui.url}</label>
       <input id="ek-url" type="url" placeholder="https://twitch.tv/..." autocomplete="off" spellcheck="false" />
@@ -58,6 +61,16 @@ const ui = {
 
     <div class="panel">
       <h2>{ui.preview}</h2>
+      <label class="size-row">{ui.size}
+        <select id="ek-size">
+          <option value="560" selected>560</option>
+          <option value="420">420</option>
+          <option value="640">640</option>
+          <option value="854">854</option>
+          <option value="1280">1280</option>
+          <option value="responsive">{ui.sizeResponsive}</option>
+        </select>
+      </label>
       <div id="ek-preview" class="preview"></div>
       <h2>{ui.code}</h2>
       <textarea id="ek-code" rows="5" readonly spellcheck="false"></textarea>
@@ -85,6 +98,8 @@ const ui = {
   textarea { font: 12px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; }
   .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px 12px; }
   .grid label { display: flex; align-items: center; gap: 8px; }
+  .size-row { display: flex; align-items: center; gap: 8px; }
+  select { padding: 4px 8px; border: 1px solid var(--border); border-radius: 6px; background: var(--bg); color: var(--fg); font: inherit; }
   .preview { position: relative; aspect-ratio: 16 / 9; background: #000; border-radius: 8px; overflow: hidden; }
   .preview iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
   button { margin-top: 8px; padding: 8px 16px; border: 1px solid var(--border); border-radius: 8px; background: var(--accent); color: #fff; font: inherit; cursor: pointer; }

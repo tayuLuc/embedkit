@@ -17,6 +17,7 @@ const ui = {
   preview: t(locale, { en: 'Preview', ru: 'Превью' }),
   code: t(locale, { en: 'Embed code', ru: 'Код для вставки' }),
   copy: t(locale, { en: 'Copy', ru: 'Копировать' }),
+  copied: t(locale, { en: 'Copied', ru: 'Скопировано' }),
   seoTitle: t(locale, { en: 'Spotify embed code generator | EmbedKit', ru: 'Генератор кода для Spotify | EmbedKit' }),
   desc: t(locale, { en: 'Generate an official Spotify embed iframe for a track, album, playlist, episode or artist, with theme and size options.', ru: 'Официальный iframe Spotify для трека, альбома, плейлиста, эпизода или артиста: тема, размер, живое превью.' }),
   howTitle: t(locale, { en: 'How to embed Spotify on your site', ru: 'Как встроить Spotify на сайт' }),
@@ -26,7 +27,7 @@ const ui = {
 <Base title={ui.seoTitle} description={ui.desc}>
   <h1>{ui.h1}</h1>
   <p class="lead">{ui.lead}</p>
-  <div class="ek" data-ek-generator="spotify" data-t-invalid={ui.invalid}>
+  <div class="ek" data-ek-generator="spotify" data-t-invalid={ui.invalid} data-t-copied={ui.copied}>
     <div class="panel">
       <label for="ek-url">{ui.url}</label>
       <input id="ek-url" type="url" placeholder="https://open.spotify.com/track/..." autocomplete="off" spellcheck="false" />

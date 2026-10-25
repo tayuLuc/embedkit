@@ -32,7 +32,7 @@ const ui = {
     <p class="kicker">{t(locale, { en: 'paste a link', ru: 'вставь ссылку' })} <span aria-hidden="true">→</span> {t(locale, { en: 'tune the player', ru: 'настрой плеер' })} <span aria-hidden="true">→</span> {t(locale, { en: 'copy the code', ru: 'скопируй код' })}</p>
   </section>
   <ul class="providers">
-    {['youtube', 'vimeo', 'twitch', 'dailymotion', 'tiktok', 'telegram', 'spotify'].map((id) => (
+    {['youtube', 'vimeo', 'twitch', 'dailymotion', 'vk', 'rutube', 'tiktok', 'telegram', 'spotify'].map((id) => (
       <li>
         <a href={`${BASE}/${locale}/generator/${id}`}>{id.charAt(0).toUpperCase() + id.slice(1)}</a>
         <span>{ui.open}</span>

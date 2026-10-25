@@ -33,13 +33,31 @@ const u = (path: string) => `${base}${path}`;
     {props.description && <meta property="og:description" content={props.description} />}
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="EmbedKit" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={`${site}/og.png`} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content={`${site}/og.png`} />
     <link rel="icon" href={u('/favicon.svg')} type="image/svg+xml" />
-    <script is:inline define:vars={{}}>
+    <link rel="icon" href={u('/icons/icon-192.png')} type="image/png" sizes="192x192" />
+    <link rel="shortcut icon" href={u('/icons/icon-192.png')} type="image/png" />
+    <link rel="apple-touch-icon" href={u('/icons/apple-touch-icon.png')} />
+    <link rel="manifest" href={u('/manifest.webmanifest')} />
+    <meta name="theme-color" content="#0b62ff" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="EmbedKit" />
+    <script is:inline define:vars={{ swUrl: u('/sw.js'), scope: `${base}/` }}>
       document.querySelectorAll('[data-ek-lang]').forEach(function (a) {
         a.addEventListener('click', function () {
           try { localStorage.setItem('ek-lang', a.getAttribute('data-ek-lang')); } catch (e) {}
         });
       });
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function () {
+          navigator.serviceWorker.register(swUrl, { scope: scope }).catch(function () {});
+        });
+      }
     </script>
     <slot name="head" />
   </head>
@@ -54,6 +72,8 @@ const u = (path: string) => `${base}${path}`;
         <a href={u(`/${locale}/generator/tiktok`)}>TikTok</a>
         <a href={u(`/${locale}/generator/telegram`)}>Telegram</a>
         <a href={u(`/${locale}/generator/spotify`)}>Spotify</a>
+        <a href={u(`/${locale}/generator/vk`)}>VK Video</a>
+        <a href={u(`/${locale}/generator/rutube`)}>Rutube</a>
       </nav>
       <nav class="langs">
         {locales.map((l) => (
@@ -80,4 +100,9 @@ const u = (path: string) => `${base}${path}`;
   .main-nav a { font-size: 14px; }
   .langs a { margin-left: 10px; font-size: 13px; color: var(--muted); }
   .langs a[aria-current="page"] { color: var(--fg); font-weight: 600; }
+  @media (max-width: 720px) {
+    .site-header { flex-wrap: wrap; }
+    .main-nav { flex-wrap: nowrap; order: 3; width: 100%; max-width: 100%; margin-left: 0; justify-content: flex-start; white-space: nowrap; overflow-x: auto; scrollbar-width: none; }
+    .main-nav::-webkit-scrollbar { display: none; }
+  }
 </style>

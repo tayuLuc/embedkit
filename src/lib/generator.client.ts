@@ -8,9 +8,18 @@ import { parseDailymotion, buildDailymotion, dailymotionEmbedCode, type Dailymot
 import { parseTikTok, buildTikTok, tikTokEmbedCode, type TikTokOptions } from './providers/tiktok';
 import { parseSpotify, buildSpotify, spotifyEmbedCode, type SpotifyOptions } from './providers/spotify';
 import { parseTelegram, buildTelegram, telegramEmbedCode, type TelegramOptions } from './providers/telegram';
+import { parseVK, buildVK, vkEmbedCode, type VKOptions } from './providers/vk';
+import { parseRutube, buildRutube, rutubeEmbedCode, type RutubeOptions } from './providers/rutube';
 import { timeToSeconds } from './build';
 
 type Cbx = HTMLInputElement;
+
+const SIZES: Record<string, number> = { '420': 420, '560': 560, '640': 640, '854': 854, '1280': 1280 };
+
+function responsiveWrap(code: string): string {
+  const frame = code.replace(/^<iframe/, '<iframe style="position:absolute;inset:0;width:100%;height:100%;border:0"');
+  return `<div style="position:relative;padding-top:56.25%;height:0;overflow:hidden;max-width:100%">\n  ${frame}\n</div>`;
+}
 
 function mount(root: HTMLElement) {
   const $ = <T extends HTMLElement = HTMLElement>(id: string) => root.querySelector(`#${id}`) as T;
@@ -19,6 +28,8 @@ function mount(root: HTMLElement) {
   const code = $<HTMLTextAreaElement>('ek-code');
   const status = $<HTMLElement>('ek-status');
   const copyBtn = $<HTMLElement>('ek-copy');
+  const sizeSel = $<HTMLSelectElement>('ek-size');
+  const copiedText = root.dataset.tCopied ?? 'Copied';
   const cb = (id: string): Cbx => root.querySelector(`#${id}`) as Cbx;
   const secs = (el: Cbx): number => timeToSeconds(el.value) ?? 0;
   const provider = root.dataset.ekGenerator ?? 'youtube';
@@ -37,9 +48,11 @@ function mount(root: HTMLElement) {
       };
       const html = buildYouTube(parsed, opts);
       const facade = cb('ek-facade')?.checked;
+      const w = pickedWidth();
+      const raw = facade ? facadeSnippet(html.src, parsed.contentId, String(html.attrs.title)) : youtubeEmbedCode(html, w, Math.round(w * 9 / 16));
       return {
         src: html.src,
-        code: facade ? facadeSnippet(html.src, parsed.contentId, String(html.attrs.title)) : youtubeEmbedCode(html),
+        code: !facade && responsive() ? responsiveWrap(raw) : raw,
         title: String(html.attrs.title),
       };
     },
@@ -57,7 +70,9 @@ function mount(root: HTMLElement) {
         start: String(secs(cb('ek-start'))),
       };
       const html = buildVimeo(parsed, opts);
-      return { src: html.src, code: vimeoEmbedCode(html), title: String(html.attrs.title) };
+      const w = pickedWidth();
+      const raw = vimeoEmbedCode(html, w, Math.round(w * 9 / 16));
+      return { src: html.src, code: responsive() ? responsiveWrap(raw) : raw, title: String(html.attrs.title) };
     },
     twitch() {
       const parsed = parseTwitch(urlInput.value);
@@ -69,7 +84,9 @@ function mount(root: HTMLElement) {
         mute: cb('ek-mute')?.checked,
       };
       const html = buildTwitch(parsed, opts);
-      return { src: html.src, code: twitchEmbedCode(html), title: String(html.attrs.title) };
+      const w = pickedWidth();
+      const raw = twitchEmbedCode(html, w, Math.round(w * 9 / 16));
+      return { src: html.src, code: responsive() ? responsiveWrap(raw) : raw, title: String(html.attrs.title) };
     },
     dailymotion() {
       const parsed = parseDailymotion(toUrl(urlInput.value) ?? new URL('about:blank'));
@@ -82,7 +99,9 @@ function mount(root: HTMLElement) {
         start: String(secs(cb('ek-start'))),
       };
       const html = buildDailymotion(parsed, opts);
-      return { src: html.src, code: dailymotionEmbedCode(html), title: String(html.attrs.title) };
+      const w = pickedWidth();
+      const raw = dailymotionEmbedCode(html, w, Math.round(w * 9 / 16));
+      return { src: html.src, code: responsive() ? responsiveWrap(raw) : raw, title: String(html.attrs.title) };
     },
     telegram() {
       const parsed = parseTelegram(urlInput.value);
@@ -102,6 +121,30 @@ function mount(root: HTMLElement) {
       const html = buildSpotify(parsed, {} as SpotifyOptions);
       return { src: html.src, code: spotifyEmbedCode(html), title: String(html.attrs.title) };
     },
+    vk() {
+      const parsed = parseVK(toUrl(urlInput.value) ?? new URL('about:blank'));
+      if (!parsed) return { src: '', code: '', title: '' };
+      const opts: VKOptions = {
+        autoplay: cb('ek-autoplay')?.checked,
+        hd: cb('ek-hd') ? cb('ek-hd').checked : true,
+      };
+      const html = buildVK(parsed, opts);
+      const w = pickedWidth();
+      const raw = vkEmbedCode(html, w, Math.round(w * 9 / 16));
+      return { src: html.src, code: responsive() ? responsiveWrap(raw) : raw, title: String(html.attrs.title) };
+    },
+    rutube() {
+      const parsed = parseRutube(toUrl(urlInput.value) ?? new URL('about:blank'));
+      if (!parsed) return { src: '', code: '', title: '' };
+      const opts: RutubeOptions = {
+        autoplay: cb('ek-autoplay')?.checked,
+        showSeries: cb('ek-series')?.checked,
+      };
+      const html = buildRutube(parsed, opts);
+      const w = pickedWidth();
+      const raw = rutubeEmbedCode(html, w, Math.round(w * 9 / 16));
+      return { src: html.src, code: responsive() ? responsiveWrap(raw) : raw, title: String(html.attrs.title) };
+    },
     tiktok() {
       const parsed = parseTikTok(toUrl(urlInput.value) ?? new URL('about:blank'));
       if (!parsed) return { src: '', code: '', title: '' };
@@ -112,6 +155,11 @@ function mount(root: HTMLElement) {
 
   const mode = (): string => root.dataset.ekMode ?? 'post';
 
+  /** Width picked in the Preview panel; page default (560) when no select. */
+  const pickedWidth = (): number => SIZES[sizeSel?.value ?? ''] ?? 560;
+  /** A page without #ek-size keeps the plain fixed-size iframe. */
+  const responsive = (): boolean => !!sizeSel && !SIZES[sizeSel.value];
+
   function render() {
     const engine = engines[provider]!();
     if (!engine.code) {
@@ -121,6 +169,8 @@ function mount(root: HTMLElement) {
       return;
     }
     if (provider === 'tiktok') {
+      preview.style.aspectRatio = '9 / 16';
+      preview.style.maxHeight = '620px';
       preview.innerHTML = '';
       const box = document.createElement('div');
       box.innerHTML = engine.code;
@@ -156,6 +206,8 @@ function mount(root: HTMLElement) {
       }
       preview.replaceChildren(iframe);
     }
+    const px = sizeSel ? SIZES[sizeSel.value] : 0;
+    preview.style.maxWidth = px ? `${px}px` : '';
     code.value = engine.code;
     status.textContent = '';
   }
@@ -163,9 +215,19 @@ function mount(root: HTMLElement) {
   root.addEventListener('input', render);
   copyBtn.addEventListener('click', async () => {
     if (!code.value) return;
-    await navigator.clipboard.writeText(code.value);
+    const text = code.value;
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch {
+      code.select();
+      document.execCommand('copy');
+    }
     copyBtn.dataset.state = 'copied';
-    setTimeout(() => (copyBtn.dataset.state = ''), 1500);
+    status.textContent = copiedText;
+    window.setTimeout(() => {
+      copyBtn.dataset.state = '';
+      status.textContent = '';
+    }, 1500);
   });
   render();
 }

@@ -26,6 +26,7 @@ const ui = {
   preview: t(locale, { en: 'Preview', ru: 'Превью' }),
   code: t(locale, { en: 'Embed code', ru: 'Код для вставки' }),
   copy: t(locale, { en: 'Copy', ru: 'Копировать' }),
+  copied: t(locale, { en: 'Copied', ru: 'Скопировано' }),
   modeLabel: t(locale, { en: 'Mode', ru: 'Режим' }),
   modePost: t(locale, { en: 'Single post', ru: 'Отдельный пост' }),
   modeChannel: t(locale, { en: 'Channel live feed', ru: 'Живая лента канала' }),
@@ -51,7 +52,7 @@ const ui = {
     <a class={mode === 'post' ? 'on' : ''} href={`/${locale}/generator/telegram`}>{ui.modePost}</a>
     <a class={mode === 'channel' ? 'on' : ''} href={`/${locale}/generator/telegram?mode=channel`}>{ui.modeChannel}</a>
   </p>
-  <div class="ek" data-ek-generator="telegram" data-ek-mode={mode} data-t-invalid={ui.invalid}>
+  <div class="ek" data-ek-generator="telegram" data-ek-mode={mode} data-t-invalid={ui.invalid} data-t-copied={ui.copied}>
     <div class="panel">
       <label for="ek-url">{ui.url}</label>
       <input id="ek-url" type="url" placeholder="https://t.me/durov/123" autocomplete="off" spellcheck="false" />
