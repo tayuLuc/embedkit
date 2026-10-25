@@ -32,6 +32,7 @@ const u = (path: string) => `${base}${path}`;
     <meta property="og:title" content={props.title} />
     {props.description && <meta property="og:description" content={props.description} />}
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="EmbedKit" />
     <link rel="icon" href={u('/favicon.svg')} type="image/svg+xml" />
     <script is:inline define:vars={{}}>
       document.querySelectorAll('[data-ek-lang]').forEach(function (a) {
@@ -51,6 +52,8 @@ const u = (path: string) => `${base}${path}`;
         <a href={u(`/${locale}/generator/twitch`)}>Twitch</a>
         <a href={u(`/${locale}/generator/dailymotion`)}>Dailymotion</a>
         <a href={u(`/${locale}/generator/tiktok`)}>TikTok</a>
+        <a href={u(`/${locale}/generator/spotify`)}>Spotify</a>
+        <a href={u(`/${locale}/generator/maps`)}>Maps</a>
       </nav>
       <nav class="langs">
         {locales.map((l) => (
@@ -73,7 +76,7 @@ const u = (path: string) => `${base}${path}`;
   a { color: var(--accent); text-decoration: none; }
   .site-header { display: flex; align-items: center; gap: 16px; padding: 12px 16px; border-bottom: 1px solid var(--border); }
   .site-header .logo { font-weight: 700; letter-spacing: -0.02em; }
-  .main-nav { display: flex; flex-wrap: wrap; gap: 14px; margin-left: auto; }
+  .main-nav { display: flex; flex-wrap: wrap; gap: 10px 14px; margin-left: auto; max-width: 62%; justify-content: flex-end; }
   .main-nav a { font-size: 14px; }
   .langs a { margin-left: 10px; font-size: 13px; color: var(--muted); }
   .langs a[aria-current="page"] { color: var(--fg); font-weight: 600; }

@@ -1,0 +1,77 @@
+---
+export const prerender = true;
+export function getStaticPaths() {
+  return [{ params: { locale: 'en' } }, { params: { locale: 'ru' } }];
+}
+
+import Base from '../../../layouts/Base.astro';
+import { t, type Locale } from '../../../lib/i18n';
+
+const locale = (Astro.params.locale ?? 'en') as Locale;
+
+const ui = {
+  h1: t(locale, { en: 'Spotify embed code generator', ru: 'Генератор кода для Spotify' }),
+  lead: t(locale, { en: 'Paste a track, album, playlist, episode or artist link — copy the official player iframe.', ru: 'Вставь ссылку на трек, альбом, плейлист, эпизод или артиста — скопируй iframe официального плеера.' }),
+  url: t(locale, { en: 'Spotify URL', ru: 'Ссылка Spotify' }),
+  invalid: t(locale, { en: 'Paste a valid Spotify link', ru: 'Вставь корректную ссылку Spotify' }),
+  preview: t(locale, { en: 'Preview', ru: 'Превью' }),
+  code: t(locale, { en: 'Embed code', ru: 'Код для вставки' }),
+  copy: t(locale, { en: 'Copy', ru: 'Копировать' }),
+  seoTitle: t(locale, { en: 'Spotify embed code generator | EmbedKit', ru: 'Генератор кода для Spotify | EmbedKit' }),
+  desc: t(locale, { en: 'Generate an official Spotify embed iframe for a track, album, playlist, episode or artist, with theme and size options.', ru: 'Официальный iframe Spotify для трека, альбома, плейлиста, эпизода или артиста: тема, размер, живое превью.' }),
+  howTitle: t(locale, { en: 'How to embed Spotify on your site', ru: 'Как встроить Spotify на сайт' }),
+  how: t(locale, { en: 'Paste the open.spotify.com link, pick the player height, copy the iframe. The visitor gets a 30-second preview without an account.', ru: 'Вставь ссылку open.spotify.com, выбери высоту плеера, скопируй iframe. Гость без аккаунта получает 30-секундный превью-фрагмент.' }),
+};
+---
+<Base title={ui.seoTitle} description={ui.desc}>
+  <h1>{ui.h1}</h1>
+  <p class="lead">{ui.lead}</p>
+  <div class="ek" data-ek-generator="spotify" data-t-invalid={ui.invalid}>
+    <div class="panel">
+      <label for="ek-url">{ui.url}</label>
+      <input id="ek-url" type="url" placeholder="https://open.spotify.com/track/..." autocomplete="off" spellcheck="false" />
+      <span id="ek-status" class="status" aria-live="polite"></span>
+    </div>
+    <div class="panel">
+      <h2>{ui.preview}</h2>
+      <div id="ek-preview" class="preview" style="aspect-ratio: auto; background: transparent"></div>
+      <h2>{ui.code}</h2>
+      <textarea id="ek-code" rows="4" readonly spellcheck="false"></textarea>
+      <button id="ek-copy" type="button">{ui.copy}</button>
+    </div>
+  </div>
+  <section class="seo">
+    <h2>{ui.howTitle}</h2>
+    <p>{ui.how}</p>
+    <details>
+      <summary>{t(locale, { en: 'Do visitors need a Spotify account?', ru: 'Нужен ли гостю аккаунт Spotify?' })}</summary>
+      <p>{t(locale, { en: 'A 30-second preview plays for logged-out visitors; full playback asks for the free app.', ru: '30-секундный превью-фрагмент играет без входа; полный плеер попросит бесплатное приложение.' })}</p>
+    </details>
+    <details>
+      <summary>{t(locale, { en: 'Works for podcasts?', ru: 'Подкасты работают?' })}</summary>
+      <p>{t(locale, { en: 'Yes — episode links embed the podcast player.', ru: 'Да — ссылки на эпизоды встраивают подкаст-плеер.' })}</p>
+    </details>
+  </section>
+</Base>
+<script>
+  import '../../../lib/generator.client.ts';
+</script>
+<style>
+  .lead { color: var(--muted); margin-top: 4px; }
+  .ek { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  @media (max-width: 720px) { .ek { grid-template-columns: 1fr; } }
+  .panel { border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+  .panel h2 { font-size: 14px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); margin: 18px 0 8px; }
+  .panel h2:first-of-type { margin-top: 0; }
+  label { display: block; margin: 6px 0; font-size: 14px; }
+  input[type="url"], textarea { width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); color: var(--fg); font: inherit; }
+  textarea { font: 12px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; }
+  #ek-preview iframe { border: 0; border-radius: 12px; width: 100%; }
+  button { margin-top: 8px; padding: 8px 16px; border: 1px solid var(--border); border-radius: 8px; background: var(--accent); color: #fff; font: inherit; cursor: pointer; }
+  button[data-state="copied"]::after { content: " ✓"; }
+  .status { display: block; min-height: 1.2em; font-size: 13px; color: var(--muted); margin-top: 6px; }
+  .seo { margin-top: 40px; max-width: 70ch; }
+  .seo h2 { font-size: 20px; }
+  .seo details { border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; margin: 8px 0; }
+  .seo summary { cursor: pointer; font-weight: 600; font-size: 15px; }
+</style>

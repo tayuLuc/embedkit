@@ -28,8 +28,11 @@ const ui = {
 <Base title={ui.seoTitle} description={ui.desc}>
   <h1>{ui.h1}</h1>
   <p class="lead">{ui.lead}</p>
+  <section class="hero">
+    <p class="kicker">{t(locale, { en: 'paste a link', ru: 'вставь ссылку' })} <span aria-hidden="true">→</span> {t(locale, { en: 'tune the player', ru: 'настрой плеер' })} <span aria-hidden="true">→</span> {t(locale, { en: 'copy the code', ru: 'скопируй код' })}</p>
+  </section>
   <ul class="providers">
-    {['youtube', 'vimeo', 'twitch', 'dailymotion', 'tiktok'].map((id) => (
+    {['youtube', 'vimeo', 'twitch', 'dailymotion', 'tiktok', 'spotify', 'maps'].map((id) => (
       <li>
         <a href={`${BASE}/${locale}/generator/${id}`}>{id.charAt(0).toUpperCase() + id.slice(1)}</a>
         <span>{ui.open}</span>
@@ -40,6 +43,7 @@ const ui = {
 
 <style>
   .lead { color: var(--muted); max-width: 60ch; }
+  .kicker { font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin: 0 0 6px; }
   .providers { list-style: none; padding: 0; }
   .providers li { display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; margin: 10px 0; }
   .providers a { font-weight: 600; }

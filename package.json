@@ -8,8 +8,8 @@
   },
   "packageManager": "pnpm@11.7.0",
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
+    "dev": "cross-env ASTRO_TELEMETRY_DISABLED=1 astro dev",
+    "build": "cross-env ASTRO_TELEMETRY_DISABLED=1 astro build",
     "preview": "astro preview",
     "check": "cross-env ASTRO_TELEMETRY_DISABLED=1 astro check",
     "pretest": "cross-env ASTRO_TELEMETRY_DISABLED=1 astro build",

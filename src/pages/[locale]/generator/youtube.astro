@@ -7,7 +7,6 @@ export function getStaticPaths() {
 import Base from '../../../layouts/Base.astro';
 import { t, type Locale } from '../../../lib/i18n';
 
-interface Props { locale: Locale }
 const locale = (Astro.params.locale ?? 'en') as Locale;
 
 const ui = {
@@ -29,7 +28,12 @@ const ui = {
   copied: t(locale, { en: 'Copied', ru: 'Скопировано' }),
   invalid: t(locale, { en: 'Paste a valid YouTube link', ru: 'Вставь корректную ссылку YouTube' }),
   seoTitle: t(locale, { en: 'YouTube embed code generator | EmbedKit', ru: 'Генератор кода для YouTube | EmbedKit' }),
-  desc: t(locale, { en: 'Generate responsive YouTube iframe embed code with autoplay, loop, start time, click-to-load privacy mode and live preview.', ru: 'Генератор responsive iframe-кода YouTube: autoplay, loop, старт с момента, приватный клик-режим, живое превью.' }),
+  desc: t(locale, {
+    en: 'Generate a responsive YouTube iframe embed code with autoplay, loop, start time, click-to-load privacy mode and live preview.',
+    ru: 'Генератор responsive iframe-кода YouTube: autoplay, loop, старт с момента, приватный клик-режим, живое превью.',
+  }),
+  howTitle: t(locale, { en: 'How to embed YouTube content', ru: 'Как встроить YouTube на сайт' }),
+  how: t(locale, { en: 'Paste any YouTube link (watch, shorts, youtu.be, playlist), toggle the options, copy the code.', ru: 'Вставь ссылку (watch, shorts, youtu.be, плейлист), включи опции, скопируй код.' }),
 };
 ---
 
@@ -67,6 +71,23 @@ const ui = {
       <button id="ek-copy" type="button">{ui.copy}</button>
     </div>
   </div>
+
+  <section class="seo">
+    <h2>{ui.howTitle}</h2>
+    <p>{ui.how}</p>
+    <details>
+      <summary>{t(locale, { en: 'Does the click-to-load mode hide tracking from YouTube?', ru: 'Скрывает ли клик-режим слежку со стороны YouTube?' })}</summary>
+      <p>{t(locale, { en: 'Before the click, your page loads only an image from i.ytimg.com (the thumbnail) — no cookies, no player scripts. After the click the standard YouTube player is inserted, so normal YouTube tracking applies from that moment.', ru: 'До клика твоя страница грузит только картинку-обложку с i.ytimg.com — ни куки, ни скриптов плеера. После клика вставляется обычный плеер YouTube, и его стандартная аналитика начинает работать.' })}</p>
+    </details>
+    <details>
+      <summary>{t(locale, { en: 'Will autoplay work on mobile?', ru: 'Работает ли автозапуск на телефоне?' })}</summary>
+      <p>{t(locale, { en: 'Mobile browsers block unmuted autoplay. Check Mute together with Autoplay, and it works.', ru: 'Мобильные браузеры блокируют громкий автозапуск. Включи «Без звука» вместе с «Автозапуском» — заработает.' })}</p>
+    </details>
+    <details>
+      <summary>{t(locale, { en: 'Can I embed a playlist?', ru: 'Можно ли встроить плейлист?' })}</summary>
+      <p>{t(locale, { en: 'Yes — paste a playlist URL (playlist?list=ID) and the generator switches to the playlist player.', ru: 'Да — вставь ссылку плейлиста (playlist?list=ID), и генератор переключится на режим плейлиста.' })}</p>
+    </details>
+  </section>
 </Base>
 
 <script>
@@ -93,4 +114,8 @@ const ui = {
   button { margin-top: 8px; padding: 8px 16px; border: 1px solid var(--border); border-radius: 8px; background: var(--accent); color: #fff; font: inherit; cursor: pointer; }
   button[data-state="copied"]::after { content: " ✓"; }
   .status { display: block; min-height: 1.2em; font-size: 13px; color: var(--muted); margin-top: 6px; }
+  .seo { margin-top: 40px; max-width: 70ch; }
+  .seo h2 { font-size: 20px; }
+  .seo details { border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; margin: 8px 0; }
+  .seo summary { cursor: pointer; font-weight: 600; font-size: 15px; }
 </style>
