@@ -7,7 +7,6 @@ import { parseTwitch, buildTwitch, twitchEmbedCode, type TwitchOptions } from '.
 import { parseDailymotion, buildDailymotion, dailymotionEmbedCode, type DailymotionOptions } from './providers/dailymotion';
 import { parseTikTok, buildTikTok, tikTokEmbedCode, type TikTokOptions } from './providers/tiktok';
 import { parseSpotify, buildSpotify, spotifyEmbedCode, type SpotifyOptions } from './providers/spotify';
-import { parseMaps, buildMaps, mapsEmbedCode, type MapsOptions } from './providers/maps';
 import { timeToSeconds } from './build';
 
 type Cbx = HTMLInputElement;
@@ -84,13 +83,6 @@ function mount(root: HTMLElement) {
       const html = buildDailymotion(parsed, opts);
       return { src: html.src, code: dailymotionEmbedCode(html), title: String(html.attrs.title) };
     },
-    maps() {
-      const parsed = parseMaps(urlInput.value);
-      if (!parsed || parsed.contentType === 'shortlink') return { src: '', code: '', title: '' };
-      const opts: MapsOptions = { width: 600, height: 450 };
-      const html = buildMaps(parsed, opts);
-      return { src: html.src, code: mapsEmbedCode(html), title: String(html.attrs.title) };
-    },
     spotify() {
       const parsed = parseSpotify(toUrl(urlInput.value) ?? new URL('about:blank'));
       if (!parsed) return { src: '', code: '', title: '' };
@@ -128,7 +120,7 @@ function mount(root: HTMLElement) {
       iframe.setAttribute('allowfullscreen', '');
       iframe.setAttribute('title', engine.title);
       iframe.loading = 'lazy';
-      if (provider === 'spotify' || provider === 'maps') {
+      if (provider === 'spotify') {
         iframe.style.width = '100%';
         iframe.style.height = '352px';
         iframe.style.border = '0';

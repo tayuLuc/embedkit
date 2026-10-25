@@ -26,6 +26,12 @@ Scope: en + ru, five providers, GitHub Pages (no server redirects).
 - ru copy is written natively, not machine-translated (operator is native).
 - Page descriptions <= 155 chars, unique per page.
 
+## Scope
+
+Media only: video (YouTube, Vimeo, Twitch, Dailymotion, TikTok) + audio
+(Spotify; TED/SoundCloud/Simplecast as candidates). Maps/images
+docs are out of product scope (operator ruling 26.10).
+
 ## Not doing
 
 - No 88-locale machine translation (Pages, free plan, no traffic budget).
