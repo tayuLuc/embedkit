@@ -17,3 +17,6 @@
 - No domain registration: hosting is <user>.github.io/<repo> (operator ruling
   25.10); Pages-specific traps (Twitch parent, .github.io indexing) are
   accepted consequences, not bugs to fix.
+- The YouTube page carries an FAQ/how-to section (pre-ruling deploy). It is the
+  single accepted exception: leave it, do not replicate it on other pages, do
+  not cite it as precedent for new pages.
