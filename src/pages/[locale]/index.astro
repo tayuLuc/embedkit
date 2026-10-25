@@ -1,0 +1,46 @@
+---
+export const prerender = true;
+export function getStaticPaths() {
+  return [{ params: { locale: 'en' } }, { params: { locale: 'ru' } }];
+}
+
+import Base from '../../layouts/Base.astro';
+import { t, type Locale } from '../../lib/i18n.ts';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const path = `/${locale}`;
+
+const ui = {
+  h1: t(locale, { en: 'Embed code generator', ru: 'Генератор кода для вставки' }),
+  lead: t(locale, {
+    en: 'Paste a video link, tune the player, copy the iframe. Everything runs in your browser — nothing is sent to a server.',
+    ru: 'Вставь ссылку на видео, настрой плеер, скопируй iframe. Всё работает в браузере — на сервер не уходит ничего.',
+  }),
+  open: t(locale, { en: 'Open generator →', ru: 'Открыть генератор →' }),
+  seoTitle: t(locale, { en: 'EmbedKit — iframe embed code generator', ru: 'EmbedKit — генератор iframe-кода' }),
+  desc: t(locale, {
+    en: 'Free responsive iframe embed code generator for YouTube and more, with autoplay, loop, start time and live preview.',
+    ru: 'Бесплатный генератор responsive iframe для YouTube и других сервисов: autoplay, loop, старт с момента, живое превью.',
+  }),
+};
+---
+
+<Base locale={locale} title={ui.seoTitle} description={ui.desc} path={path}>
+  <h1>{ui.h1}</h1>
+  <p class="lead">{ui.lead}</p>
+  <ul class="providers">
+    <li>
+      <a href={`/${locale}/generator/youtube`}>YouTube</a>
+      <span>{ui.open}</span>
+    </li>
+  </ul>
+</Base>
+
+<style>
+  .lead { color: var(--muted); max-width: 60ch; }
+  .providers { list-style: none; padding: 0; }
+  .providers li { display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; margin: 10px 0; }
+  .providers a { font-weight: 600; }
+  .providers span { color: var(--muted); font-size: 14px; }
+</style>

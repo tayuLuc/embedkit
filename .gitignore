@@ -1,4 +1,6 @@
 .toolchain/
+.npm-cache/
 node_modules/
 dist/
 .astro/
+.pnpm-store/
