@@ -47,6 +47,10 @@ const u = (path: string) => `${base}${path}`;
       <a class="logo" href={u(`/${locale}`)}>EmbedKit</a>
       <nav class="main-nav">
         <a href={u(`/${locale}/generator/youtube`)}>YouTube</a>
+        <a href={u(`/${locale}/generator/vimeo`)}>Vimeo</a>
+        <a href={u(`/${locale}/generator/twitch`)}>Twitch</a>
+        <a href={u(`/${locale}/generator/dailymotion`)}>Dailymotion</a>
+        <a href={u(`/${locale}/generator/tiktok`)}>TikTok</a>
       </nav>
       <nav class="langs">
         {locales.map((l) => (
@@ -69,7 +73,7 @@ const u = (path: string) => `${base}${path}`;
   a { color: var(--accent); text-decoration: none; }
   .site-header { display: flex; align-items: center; gap: 16px; padding: 12px 16px; border-bottom: 1px solid var(--border); }
   .site-header .logo { font-weight: 700; letter-spacing: -0.02em; }
-  .main-nav { display: flex; gap: 14px; margin-left: auto; }
+  .main-nav { display: flex; flex-wrap: wrap; gap: 14px; margin-left: auto; }
   .main-nav a { font-size: 14px; }
   .langs a { margin-left: 10px; font-size: 13px; color: var(--muted); }
   .langs a[aria-current="page"] { color: var(--fg); font-weight: 600; }

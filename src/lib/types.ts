@@ -1,6 +1,6 @@
 export type ProviderId = 'youtube' | 'vimeo' | 'dailymotion' | 'twitch' | 'tiktok';
 
-export type ContentType = 'video' | 'channel' | 'clip' | 'collection' | 'chat';
+export type ContentType = 'video' | 'channel' | 'clip' | 'collection' | 'chat' | 'shortlink';
 
 export interface ParsedRef {
   contentId: string;
