@@ -9,7 +9,8 @@
     <script is:inline define:vars={{}}>
       (function () {
         try {
-          var stored = localStorage.getItem('ek-lang');
+          var stored = new URLSearchParams(location.search).get('lang');
+          if (stored !== 'en' && stored !== 'ru') stored = localStorage.getItem('ek-lang');
           var lang =
             stored === 'en' || stored === 'ru'
               ? stored
@@ -17,6 +18,7 @@
                 ? 'ru'
                 : 'en';
           location.replace('/embedkit/' + lang + '/');
+          try { if (stored) localStorage.setItem('ek-lang', stored); } catch (e) {}
         } catch (e) {}
       })();
     </script>
