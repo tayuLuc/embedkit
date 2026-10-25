@@ -4,3 +4,5 @@ node_modules/
 dist/
 .astro/
 .pnpm-store/
+.python/
+__pycache__/
