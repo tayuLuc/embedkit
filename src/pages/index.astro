@@ -1,11 +1,25 @@
 ---
-// Root entry: forwards to the English locale; language discovery via hreflang.
+// Root entry: inline locale sniff (Accept-Language + localStorage) → /en/ | /ru/.
+// No-JS visitors land on English; the links below cover the other choice.
 ---
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta http-equiv="refresh" content="0;url=/embedkit/en/" />
+    <script is:inline define:vars={{}}>
+      (function () {
+        try {
+          var stored = localStorage.getItem('ek-lang');
+          var lang =
+            stored === 'en' || stored === 'ru'
+              ? stored
+              : (navigator.languages || [navigator.language || 'en'])[0].toLowerCase().startsWith('ru')
+                ? 'ru'
+                : 'en';
+          location.replace('/embedkit/' + lang + '/');
+        } catch (e) {}
+      })();
+    </script>
     <link rel="canonical" href="https://tayuluc.github.io/embedkit/en/" />
   </head>
   <body>

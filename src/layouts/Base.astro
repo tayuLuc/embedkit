@@ -33,6 +33,13 @@ const u = (path: string) => `${base}${path}`;
     {props.description && <meta property="og:description" content={props.description} />}
     <meta property="og:type" content="website" />
     <link rel="icon" href={u('/favicon.svg')} type="image/svg+xml" />
+    <script is:inline define:vars={{}}>
+      document.querySelectorAll('[data-ek-lang]').forEach(function (a) {
+        a.addEventListener('click', function () {
+          try { localStorage.setItem('ek-lang', a.getAttribute('data-ek-lang')); } catch (e) {}
+        });
+      });
+    </script>
     <slot name="head" />
   </head>
   <body>
@@ -43,7 +50,7 @@ const u = (path: string) => `${base}${path}`;
       </nav>
       <nav class="langs">
         {locales.map((l) => (
-          <a href={u(`/${l}${route}`)} aria-current={l === locale ? 'page' : undefined}>{l.toUpperCase()}</a>
+          <a href={u(`/${l}${route}`)} data-ek-lang={l} aria-current={l === locale ? 'page' : undefined}>{l.toUpperCase()}</a>
         ))}
       </nav>
     </header>
