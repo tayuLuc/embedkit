@@ -4,6 +4,8 @@ import { locales, localeAlternates, type Locale } from '../lib/i18n';
 interface Props {
   title: string;
   description?: string;
+  /** override for pages whose canonical URL differs from the render path */
+  canonicalPath?: string;
 }
 
 const props = Astro.props as Props;
@@ -15,7 +17,7 @@ const route = Astro.url.pathname.startsWith(prefix)
   ? Astro.url.pathname.slice(prefix.length)
   : '';
 const site = `https://tayuluc.github.io${base}`;
-const canonical = `${site}/${locale}${route}`;
+const canonical = `${site}/${locale}${props.canonicalPath ?? route}`;
 const alts = localeAlternates(base, route);
 const u = (path: string) => `${base}${path}`;
 ---

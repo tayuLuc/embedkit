@@ -1,0 +1,102 @@
+---
+import Base from '../layouts/Base.astro';
+import { t, type Locale } from '../lib/i18n';
+
+interface Props {
+  locale: Locale;
+  mode: 'post' | 'channel';
+}
+
+const { locale, mode } = Astro.props;
+
+const channel = mode === 'channel';
+
+const ui = {
+  h1: channel
+    ? t(locale, { en: 'Telegram channel embed generator', ru: 'Генератор кода для Telegram-канала' })
+    : t(locale, { en: 'Telegram post embed generator', ru: 'Генератор кода для Telegram-поста' }),
+  lead: t(locale, {
+    en: 'Paste a t.me link — get the official Telegram embed (widget script). Posts and channel streams.',
+    ru: 'Вставь ссылку t.me — получишь официальный embed Telegram (виджет-скрипт). Посты и живая лента канала.',
+  }),
+  url: t(locale, { en: 'Telegram link', ru: 'Ссылка Telegram' }),
+  invalid: channel
+    ? t(locale, { en: 'Paste a channel link: https://t.me/s/channel', ru: 'Вставь ссылку канала: https://t.me/s/канал' })
+    : t(locale, { en: 'Paste a t.me link: /channel/123 or /s/channel/123', ru: 'Вставь ссылку t.me: /канал/123 или /s/канал/123' }),
+  appearance: t(locale, { en: 'Appearance', ru: 'Внешний вид' }),
+  dark: t(locale, { en: 'Dark theme', ru: 'Тёмная тема' }),
+  grow: t(locale, { en: 'Grow to full text', ru: 'Показывать полный текст' }),
+  preview: t(locale, { en: 'Preview', ru: 'Превью' }),
+  code: t(locale, { en: 'Embed code', ru: 'Код для вставки' }),
+  copy: t(locale, { en: 'Copy', ru: 'Копировать' }),
+  copied: t(locale, { en: 'Copied', ru: 'Скопировано' }),
+  modeLabel: t(locale, { en: 'Mode', ru: 'Режим' }),
+  modePost: t(locale, { en: 'Single post', ru: 'Отдельный пост' }),
+  modeChannel: t(locale, { en: 'Channel live feed', ru: 'Живая лента канала' }),
+  seoTitle: channel
+    ? t(locale, { en: 'Telegram channel embed code generator | EmbedKit', ru: 'Генератор кода для Telegram-канала | EmbedKit' })
+    : t(locale, { en: 'Telegram post embed code generator | EmbedKit', ru: 'Генератор кода для Telegram-поста | EmbedKit' }),
+  desc: t(locale, {
+    en: 'Turn a t.me link into the official Telegram embed code: single post widget or channel live feed, dark theme, full-text grow.',
+    ru: 'Ссылка t.me в официальный embed Telegram: виджет поста или живая лента канала, тёмная тема, полный текст.',
+  }),
+};
+
+const base = (import.meta.env.BASE_URL || '/embedkit').replace(/\/$/, '');
+const postHref = `/${locale}/generator/telegram`;
+const channelHref = `/${locale}/generator/telegram/channel`;
+---
+
+<Base title={ui.seoTitle} description={ui.desc} canonicalPath={channel ? '/generator/telegram/channel' : '/generator/telegram'}>
+  <h1>{ui.h1}</h1>
+  <p class="lead">{ui.lead}</p>
+  <p class="modes">
+    {ui.modeLabel}:
+    <a class={channel ? '' : 'on'} href={`${base}${postHref}`}>{ui.modePost}</a>
+    <a class={channel ? 'on' : ''} href={`${base}${channelHref}`}>{ui.modeChannel}</a>
+  </p>
+  <div class="ek" data-ek-generator="telegram" data-ek-mode={mode} data-t-invalid={ui.invalid} data-t-copied={ui.copied}>
+    <div class="panel">
+      <label for="ek-url">{ui.url}</label>
+      <input id="ek-url" type="url" placeholder={channel ? 'https://t.me/s/channel' : 'https://t.me/durov/123'} autocomplete="off" spellcheck="false" />
+      <span id="ek-status" class="status" aria-live="polite"></span>
+      <h2>{ui.appearance}</h2>
+      <div class="grid">
+        <label><input type="checkbox" id="ek-dark" /> {ui.dark}</label>
+        <label><input type="checkbox" id="ek-grow" /> {ui.grow}</label>
+      </div>
+    </div>
+    <div class="panel">
+      <h2>{ui.preview}</h2>
+      <div id="ek-preview" class="preview" style="aspect-ratio:auto;background:transparent"></div>
+      <h2>{ui.code}</h2>
+      <textarea id="ek-code" rows="4" readonly spellcheck="false"></textarea>
+      <button id="ek-copy" type="button">{ui.copy}</button>
+    </div>
+  </div>
+</Base>
+
+<script>
+  import '../lib/generator.client.ts';
+</script>
+
+<style>
+  .lead { color: var(--muted); margin-top: 4px; }
+  .modes { font-size: 14px; color: var(--muted); display: flex; gap: 12px; align-items: center; }
+  .modes a { padding: 4px 10px; border: 1px solid var(--border); border-radius: 999px; font-size: 13px; }
+  .modes a.on { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+  .ek { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  @media (max-width: 720px) { .ek { grid-template-columns: 1fr; } }
+  .panel { border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+  .panel h2 { font-size: 14px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); margin: 18px 0 8px; }
+  .panel h2:first-of-type { margin-top: 0; }
+  label { display: block; margin: 6px 0; font-size: 14px; }
+  input[type="url"], textarea { width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); color: var(--fg); font: inherit; }
+  textarea { font: 12px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px 12px; }
+  .grid label { display: flex; align-items: center; gap: 8px; }
+  #ek-preview iframe { border: 0; border-radius: 8px; width: 100%; }
+  button { margin-top: 8px; padding: 8px 16px; border: 1px solid var(--border); border-radius: 8px; background: var(--accent); color: #fff; font: inherit; cursor: pointer; }
+  button[data-state="copied"]::after { content: " ✓"; }
+  .status { display: block; min-height: 1.2em; font-size: 13px; color: var(--muted); margin-top: 6px; }
+</style>
