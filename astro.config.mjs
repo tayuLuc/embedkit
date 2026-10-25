@@ -6,6 +6,7 @@ const site = process.env.SITE_ORIGIN ?? 'https://tayuluc.github.io';
 const base = `/${(process.env.REPO_NAME ?? 'embedkit').replace(/^\/+|\/+$/g, '')}`;
 
 export default defineConfig({
+  telemetry: { enabled: false },
   site,
   base,
   trailingSlash: 'never',

@@ -8,6 +8,7 @@ export const meta = {
 };
 
 export const locales = ['en', 'ru'] as const;
+export const BASE = (import.meta.env?.BASE_URL ?? '/embedkit').replace(/\/$/, '');
 export type Locale = (typeof locales)[number];
 
 export function t(locale: Locale, dict: Record<Locale, string>): string {

@@ -5,7 +5,7 @@ export function getStaticPaths() {
 }
 
 import Base from '../../layouts/Base.astro';
-import { t, type Locale } from '../../lib/i18n';
+import { t, BASE, type Locale } from '../../lib/i18n';
 
 interface Props { locale: Locale }
 const locale = (Astro.params.locale ?? 'en') as Locale;
@@ -31,7 +31,7 @@ const ui = {
   <ul class="providers">
     {['youtube', 'vimeo', 'twitch', 'dailymotion', 'tiktok'].map((id) => (
       <li>
-        <a href={`/${locale}/generator/${id}`}>{id.charAt(0).toUpperCase() + id.slice(1)}</a>
+        <a href={`${BASE}/${locale}/generator/${id}`}>{id.charAt(0).toUpperCase() + id.slice(1)}</a>
         <span>{ui.open}</span>
       </li>
     ))}
