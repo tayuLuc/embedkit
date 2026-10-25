@@ -5,12 +5,10 @@ export function getStaticPaths() {
 }
 
 import Base from '../../../layouts/Base.astro';
-import type { Locale } from '../../../lib/i18n.ts';
-import { t } from '../../../lib/i18n.ts';
+import { t, type Locale } from '../../../lib/i18n';
 
 interface Props { locale: Locale }
-const { locale } = Astro.props;
-const path = `/${locale}/generator/youtube`;
+const locale = (Astro.params.locale ?? 'en') as Locale;
 
 const ui = {
   h1: t(locale, { en: 'YouTube embed code generator', ru: 'Генератор кода для YouTube' }),
@@ -35,7 +33,7 @@ const ui = {
 };
 ---
 
-<Base locale={locale} title={ui.seoTitle} description={ui.desc} path={path}>
+<Base locale={locale} title={ui.seoTitle} description={ui.desc}>
   <h1>{ui.h1}</h1>
   <p class="lead">{ui.lead}</p>
 
@@ -57,7 +55,7 @@ const ui = {
 
       <h2>{ui.appearance}</h2>
       <div class="grid">
-        <label><input type="checkbox" id="ek-facade" /> {ui.privacy}</label>
+        <label><input type="checkbox" id="ek-facade" checked /> {ui.privacy}</label>
       </div>
     </div>
 

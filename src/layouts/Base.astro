@@ -1,17 +1,23 @@
 ---
-import { locales, localeAlternates, t, type Locale } from '../lib/i18n.ts';
+import { locales, localeAlternates, type Locale } from '../lib/i18n';
 
 interface Props {
-  locale: Locale;
   title: string;
   description?: string;
-  path: string;
 }
 
-const { locale, title, description, path } = Astro.props;
-const site = 'https://tayuluc.github.io/embedkit';
-const canonical = `${site}${path === '/' ? '' : path}`;
-const alts = localeAlternates(path);
+const props = Astro.props as Props;
+const locale = (Astro.params.locale ?? 'en') as Locale;
+// route relative to the locale root, computed from the real URL
+const base = (import.meta.env.BASE_URL || '/embedkit').replace(/\/$/, '');
+const prefix = `${base}/${locale}`;
+const route = Astro.url.pathname.startsWith(prefix)
+  ? Astro.url.pathname.slice(prefix.length)
+  : '';
+const site = `https://tayuluc.github.io${base}`;
+const canonical = `${site}/${locale}${route}`;
+const alts = localeAlternates(base, route);
+const u = (path: string) => `${base}${path}`;
 ---
 
 <!doctype html>
@@ -19,35 +25,31 @@ const alts = localeAlternates(path);
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{title}</title>
-    {description && <meta name="description" content={description} />}
+    <title>{props.title}</title>
+    {props.description && <meta name="description" content={props.description} />}
     <link rel="canonical" href={canonical} />
     {Object.entries(alts).map(([lang, href]) => <link rel="alternate" hreflang={lang} href={href} />)}
-    <meta property="og:title" content={title} />
-    {description && <meta property="og:description" content={description} />}
+    <meta property="og:title" content={props.title} />
+    {props.description && <meta property="og:description" content={props.description} />}
     <meta property="og:type" content="website" />
-    <link rel="icon" href={`${import.meta.env.BASE_URL}favicon.svg`} type="image/svg+xml" />
+    <link rel="icon" href={u('/favicon.svg')} type="image/svg+xml" />
     <slot name="head" />
   </head>
   <body>
     <header class="site-header">
-      <a class="logo" href={`/${locale}`}>EmbedKit</a>
+      <a class="logo" href={u(`/${locale}`)}>EmbedKit</a>
+      <nav class="main-nav">
+        <a href={u(`/${locale}/generator/youtube`)}>YouTube</a>
+      </nav>
       <nav class="langs">
         {locales.map((l) => (
-          <a href={`/${l}${path.replace(new RegExp(`^/${locale}`), '')}`} aria-current={l === locale ? 'page' : undefined}>{l.toUpperCase()}</a>
+          <a href={u(`/${l}${route}`)} aria-current={l === locale ? 'page' : undefined}>{l.toUpperCase()}</a>
         ))}
       </nav>
     </header>
     <main>
       <slot />
     </main>
-    <footer class="site-footer">
-      <span>EmbedKit</span>
-      <span>·</span>
-      <a href={`/${locale}/generator/youtube`}>{t(locale, { en: 'YouTube', ru: 'YouTube' })}</a>
-      <span>·</span>
-      <a href={`/${locale}/generator/vimeo`}>{t(locale, { en: 'Vimeo', ru: 'Vimeo' })}</a>
-    </footer>
   </body>
 </html>
 
@@ -58,10 +60,10 @@ const alts = localeAlternates(path);
   body { margin: 0; font: 16px/1.55 system-ui, -apple-system, sans-serif; color: var(--fg); background: var(--bg); }
   main { max-width: 960px; margin: 0 auto; padding: 24px 16px 48px; }
   a { color: var(--accent); text-decoration: none; }
-  .site-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 1px solid var(--border); }
+  .site-header { display: flex; align-items: center; gap: 16px; padding: 12px 16px; border-bottom: 1px solid var(--border); }
   .site-header .logo { font-weight: 700; letter-spacing: -0.02em; }
+  .main-nav { display: flex; gap: 14px; margin-left: auto; }
+  .main-nav a { font-size: 14px; }
   .langs a { margin-left: 10px; font-size: 13px; color: var(--muted); }
   .langs a[aria-current="page"] { color: var(--fg); font-weight: 600; }
-  .site-footer { border-top: 1px solid var(--border); padding: 16px; text-align: center; color: var(--muted); font-size: 14px; }
-  .site-footer a { color: var(--muted); }
 </style>

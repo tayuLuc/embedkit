@@ -14,12 +14,11 @@ export function t(locale: Locale, dict: Record<Locale, string>): string {
   return dict[locale] ?? dict.en;
 }
 
-export function localeAlternates(path: string): Record<string, string> {
-  const site = 'https://tayuluc.github.io/embedkit';
-  const rest = path.replace(/^\/(en|ru)/, '') || '/';
+export function localeAlternates(base: string, route: string): Record<string, string> {
+  const href = (l: string) => `${base}/${l}${route}`;
   return {
-    en: `${site}/en${rest === '/' ? '' : rest}`,
-    ru: `${site}/ru${rest === '/' ? '' : rest}`,
-    'x-default': `${site}/en${rest === '/' ? '' : rest}`,
+    en: href('en'),
+    ru: href('ru'),
+    'x-default': href('en'),
   };
 }

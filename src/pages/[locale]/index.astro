@@ -5,11 +5,10 @@ export function getStaticPaths() {
 }
 
 import Base from '../../layouts/Base.astro';
-import { t, type Locale } from '../../lib/i18n.ts';
+import { t, type Locale } from '../../lib/i18n';
 
 interface Props { locale: Locale }
-const { locale } = Astro.props;
-const path = `/${locale}`;
+const locale = (Astro.params.locale ?? 'en') as Locale;
 
 const ui = {
   h1: t(locale, { en: 'Embed code generator', ru: 'Генератор кода для вставки' }),
@@ -26,7 +25,7 @@ const ui = {
 };
 ---
 
-<Base locale={locale} title={ui.seoTitle} description={ui.desc} path={path}>
+<Base locale={locale} title={ui.seoTitle} description={ui.desc}>
   <h1>{ui.h1}</h1>
   <p class="lead">{ui.lead}</p>
   <ul class="providers">
