@@ -4,20 +4,20 @@ import { toUrl, hostRouter, segments } from '../src/lib/url.ts';
 
 describe('buildEmbedUrl', () => {
   const spec = {
-    baseUrl: 'https://www.youtube-nocookie.com/embed/abc123',
+    baseUrl: 'https://www.youtube.com/embed/abc123',
     keys: { autoplay: 'autoplay', start: 'start', rel: 'rel' },
     defaults: { autoplay: false, start: 0, rel: true },
   };
   it('drops default params', () => {
     expect(
       buildEmbedUrl({ ...spec, params: { autoplay: false, start: 0, rel: true } }),
-    ).toBe('https://www.youtube-nocookie.com/embed/abc123');
+    ).toBe('https://www.youtube.com/embed/abc123');
   });
   it('maps, bools->0/1, sorts', () => {
     expect(
       buildEmbedUrl({ ...spec, params: { rel: false, autoplay: true, start: 90 } }),
     ).toBe(
-      'https://www.youtube-nocookie.com/embed/abc123?autoplay=1&rel=0&start=90',
+      'https://www.youtube.com/embed/abc123?autoplay=1&rel=0&start=90',
     );
   });
   it('modifier can relocate a param to hash', () => {

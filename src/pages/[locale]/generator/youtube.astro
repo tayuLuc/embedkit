@@ -18,7 +18,7 @@ const ui = {
   url: t(locale, { en: 'YouTube URL', ru: 'Ссылка YouTube' }),
   playback: t(locale, { en: 'Playback', ru: 'Воспроизведение' }),
   appearance: t(locale, { en: 'Appearance', ru: 'Внешний вид' }),
-  privacy: t(locale, { en: 'Privacy-enhanced player (no cookies until play)', ru: 'Приватный плеер (без cookies до нажатия Play)' }),
+  privacy: t(locale, { en: 'Click-to-load: no YouTube requests until play', ru: 'Клик-для-загрузки: ноль запросов к YouTube до нажатия' }),
   autoplay: t(locale, { en: 'Autoplay', ru: 'Автозапуск' }),
   mute: t(locale, { en: 'Mute', ru: 'Без звука' }),
   loop: t(locale, { en: 'Loop', ru: 'Повтор' }),
@@ -31,7 +31,7 @@ const ui = {
   copied: t(locale, { en: 'Copied', ru: 'Скопировано' }),
   invalid: t(locale, { en: 'Paste a valid YouTube link', ru: 'Вставь корректную ссылку YouTube' }),
   seoTitle: t(locale, { en: 'YouTube embed code generator | EmbedKit', ru: 'Генератор кода для YouTube | EmbedKit' }),
-  desc: t(locale, { en: 'Generate responsive YouTube iframe embed code with autoplay, loop, start time, nocookie player and live preview.', ru: 'Генератор responsive iframe-кода YouTube: autoplay, loop, старт с момента, nocookie-плеер, живое превью.' }),
+  desc: t(locale, { en: 'Generate responsive YouTube iframe embed code with autoplay, loop, start time, click-to-load privacy mode and live preview.', ru: 'Генератор responsive iframe-кода YouTube: autoplay, loop, старт с момента, приватный клик-режим, живое превью.' }),
 };
 ---
 
@@ -57,7 +57,7 @@ const ui = {
 
       <h2>{ui.appearance}</h2>
       <div class="grid">
-        <label><input type="checkbox" id="ek-nocookie" /> {ui.privacy}</label>
+        <label><input type="checkbox" id="ek-facade" /> {ui.privacy}</label>
       </div>
     </div>
 

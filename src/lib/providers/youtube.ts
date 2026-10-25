@@ -41,7 +41,6 @@ export const parseYouTube = hostRouter({
 });
 
 export interface YouTubeOptions {
-  nocookie?: boolean;
   autoplay?: boolean;
   mute?: boolean;
   loop?: boolean;
@@ -90,9 +89,7 @@ export function buildYouTube(
   ref: ParsedRef,
   opts: YouTubeOptions,
 ): EmbedHtml {
-  const host = opts.nocookie
-    ? 'https://www.youtube-nocookie.com'
-    : 'https://www.youtube.com';
+  const host = 'https://www.youtube.com';
   const params: Record<string, string | number | boolean | undefined> = {};
   for (const key of Object.keys(KEYS) as (keyof typeof KEYS)[]) {
     params[key] = opts[key] as string | number | boolean | undefined;

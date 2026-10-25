@@ -2,6 +2,7 @@
 import { toUrl } from './url';
 import { parseYouTube } from './providers/youtube';
 import { buildYouTube, youtubeEmbedCode, type YouTubeOptions } from './providers/youtube';
+import { facadeSnippet } from './providers/youtube-facade';
 import { timeToSeconds } from './build';
 
 function mount(root: HTMLElement) {
@@ -11,21 +12,16 @@ function mount(root: HTMLElement) {
   const code = $<HTMLTextAreaElement>('ek-code');
   const status = $<HTMLSpanElement>('ek-status');
   const copyBtn = $<HTMLButtonElement>('ek-copy');
-  const nocookie = $<HTMLInputElement>('ek-nocookie') as HTMLInputElement;
   const autoplay = $<HTMLInputElement>('ek-autoplay') as HTMLInputElement;
   const mute = $<HTMLInputElement>('ek-mute') as HTMLInputElement;
   const loop = $<HTMLInputElement>('ek-loop') as HTMLInputElement;
   const controls = $<HTMLInputElement>('ek-controls') as HTMLInputElement;
   const rel = $<HTMLInputElement>('ek-rel') as HTMLInputElement;
   const start = $<HTMLInputElement>('ek-start') as HTMLInputElement;
-
-  const L = {
-    ok: (s: string) => (status.textContent = s),
-  };
+  const facade = $<HTMLInputElement>('ek-facade') as HTMLInputElement;
 
   function currentOptions(): YouTubeOptions {
     return {
-      nocookie: nocookie.checked,
       autoplay: autoplay.checked,
       mute: mute.checked,
       loop: loop.checked,
@@ -40,7 +36,7 @@ function mount(root: HTMLElement) {
     if (!parsed) {
       preview.innerHTML = '';
       code.value = '';
-      L.ok(root.dataset.tInvalid || 'Paste a valid YouTube link');
+      status.textContent = root.dataset.tInvalid || 'Paste a valid YouTube link';
       return;
     }
     const html = buildYouTube(parsed, currentOptions());
@@ -51,8 +47,10 @@ function mount(root: HTMLElement) {
     iframe.setAttribute('title', String(html.attrs.title));
     iframe.loading = 'lazy';
     preview.replaceChildren(iframe);
-    code.value = youtubeEmbedCode(html);
-    L.ok('');
+    code.value = facade.checked
+      ? facadeSnippet(html.src, parsed.contentId, String(html.attrs.title))
+      : youtubeEmbedCode(html);
+    status.textContent = '';
   }
 
   root.addEventListener('input', render);
