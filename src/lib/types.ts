@@ -1,4 +1,4 @@
-export type ProviderId = 'youtube' | 'vimeo' | 'dailymotion' | 'twitch' | 'tiktok';
+export type ProviderId = 'youtube' | 'vimeo' | 'dailymotion' | 'twitch' | 'tiktok' | 'vk' | 'rutube';
 
 export type ContentType =
   | 'video'
