@@ -7,6 +7,7 @@ import { parseTwitch, buildTwitch, twitchEmbedCode, type TwitchOptions } from '.
 import { parseDailymotion, buildDailymotion, dailymotionEmbedCode, type DailymotionOptions } from './providers/dailymotion';
 import { parseTikTok, buildTikTok, tikTokEmbedCode, type TikTokOptions } from './providers/tiktok';
 import { parseSpotify, buildSpotify, spotifyEmbedCode, type SpotifyOptions } from './providers/spotify';
+import { parseTelegram, buildTelegram, telegramEmbedCode, type TelegramOptions } from './providers/telegram';
 import { timeToSeconds } from './build';
 
 type Cbx = HTMLInputElement;
@@ -83,6 +84,18 @@ function mount(root: HTMLElement) {
       const html = buildDailymotion(parsed, opts);
       return { src: html.src, code: dailymotionEmbedCode(html), title: String(html.attrs.title) };
     },
+    telegram() {
+      const parsed = parseTelegram(urlInput.value);
+      if (!parsed) return { src: '', code: '', title: '' };
+      const mode = (root.dataset.ekMode === 'channel' ? 'channel' : 'post') as TelegramOptions['mode'];
+      const opts: TelegramOptions = {
+        mode,
+        dark: cb('ek-dark')?.checked,
+        grow: cb('ek-grow')?.checked,
+      };
+      const html = buildTelegram(parsed, opts);
+      return { src: html.src, code: telegramEmbedCode(html, opts), title: String(html.attrs.title) };
+    },
     spotify() {
       const parsed = parseSpotify(toUrl(urlInput.value) ?? new URL('about:blank'));
       if (!parsed) return { src: '', code: '', title: '' };
@@ -96,6 +109,8 @@ function mount(root: HTMLElement) {
       return { src: html.src, code: tikTokEmbedCode(html), title: String(html.attrs.title) };
     },
   };
+
+  const mode = (): string => root.dataset.ekMode ?? 'post';
 
   function render() {
     const engine = engines[provider]!();
@@ -116,6 +131,19 @@ function mount(root: HTMLElement) {
     } else if (engine.src) {
       const iframe = document.createElement('iframe');
       iframe.src = engine.src;
+      if (provider === 'telegram') {
+        iframe.style.width = '100%';
+        iframe.style.height = mode() === 'channel' ? '400px' : '300px';
+        iframe.style.border = '0';
+        iframe.style.borderRadius = '8px';
+        iframe.setAttribute('allowtransparency', '');
+        iframe.setAttribute('scrolling', 'no');
+        iframe.setAttribute('frameBorder', '0');
+        preview.replaceChildren(iframe);
+        code.value = engine.code;
+        status.textContent = '';
+        return;
+      }
       iframe.setAttribute('allow', 'autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media');
       iframe.setAttribute('allowfullscreen', '');
       iframe.setAttribute('title', engine.title);
